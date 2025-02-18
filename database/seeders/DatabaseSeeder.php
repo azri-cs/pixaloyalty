@@ -2,22 +2,31 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Models\Brand;
+use App\Models\Business;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
+        // Create a test user
+        $testUser = User::factory()->create([
+            'name'  => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        $brands = Brand::factory()->count(3)->create();
+
+        $businesses = Business::factory()->count(5)->create([
+            'user_id' => $testUser->id,
+            // Optionally, if you want to link a business to one of the brands we created, set its brand_id:
+            // 'brand_id' => $brands->random()->id,
+        ]);
+
+        // Note: Each Business instance created using the BusinessFactory will automatically generate
+        // its related Customer instances via the afterCreating callback, and each Customer will create
+        // multiple PointTransaction entries as defined in its factory.
     }
 }
